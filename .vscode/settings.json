@@ -1,0 +1,36 @@
+{
+  // TypeScript & JavaScript
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.suggest.autoImports": true,
+  "javascript.suggest.autoImports": true,
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  // Import sorting
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+  // IntelliSense
+  "typescript.suggest.completeFunctionCalls": true,
+  "typescript.suggest.includeAutomaticOptionalChainCompletions": true,
+  // Path mappings support
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  // Auto-import suggestions on incomplete code
+  "editor.suggest.showKeywords": true,
+  "editor.suggest.showSnippets": true,
+  "editor.quickSuggestions": {
+    "other": "on",
+    "comments": "off",
+    "strings": "off"
+  },
+  // Show import quick fixes
+  "editor.lightbulb.enabled": "onCode",
+  // Format on save
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // NestJS specific
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

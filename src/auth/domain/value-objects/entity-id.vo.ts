@@ -1,7 +1,7 @@
 /**
  * Base class for all entity identifiers.
  * Ensures type safety and prevents mixing different entity IDs.
- * 
+ *
  * @example
  * class UserId extends EntityId<string> {}
  * class OrderId extends EntityId<number> {}

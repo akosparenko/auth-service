@@ -524,12 +524,116 @@ describe('Auth (e2e)', () => {
 
 ## Testing Best Practices
 
+### What to Test
+- ✅ Actual behavior and business logic
+- ✅ Edge cases and error conditions  
+- ✅ Valid and invalid input scenarios
+- ✅ State changes and side effects
+
+### What NOT to Test
+- ❌ Framework internals (NestJS, TypeORM)
+- ❌ Third-party libraries
+- ❌ Trivial getters/setters without logic
+- ❌ TypeScript type system itself
+- ❌ Things already tested in base classes (avoid redundant tests)
+- ❌ Compiler-enforced constraints (no commented "would fail" tests)
+
 ### Test Organization
 
 - Group related tests with `describe` blocks
-- Use clear, descriptive test names (should/when pattern)
-- Follow Arrange-Act-Assert pattern
-- One logical assertion per test
+- Use clear, descriptive test names that explain behavior
+- Keep tests simple and readable
+- One logical assertion per test (exceptions allowed when related)
+- Remove excessive AAA comments when code is self-explanatory
+
+### Code Clarity Over Comments
+
+```typescript
+// ❌ BAD: Excessive comments stating the obvious
+it('should create user', () => {
+  // Arrange
+  const data = { name: 'John' };
+  
+  // Act
+  const user = User.create(data);
+  
+  // Assert
+  expect(user.name).toBe('John');
+});
+
+// ✅ GOOD: Clear code needs no comments
+it('should create user', () => {
+  const user = User.create({ name: 'John' });
+  
+  expect(user.name).toBe('John');
+});
+```
+
+### No Commented "Would Fail" Tests
+
+```typescript
+// ❌ BAD: Testing TypeScript compiler, not runtime behavior
+it('should be immutable', () => {
+  const id = UserId.create('test');
+  
+  // TypeScript error - uncomment to verify:
+  // id.value = 'changed';
+  
+  expect(id.value).toBe('test');
+});
+
+// ✅ GOOD: Test actual behavior
+it('should maintain value', () => {
+  const id = UserId.create('test');
+  
+  expect(id.value).toBe('test');
+});
+```
+
+### Avoid Redundant Tests
+
+```typescript
+// ❌ BAD: Multiple tests for same thing
+it('should return ID', () => {
+  const user = User.create();
+  expect(user.getId()).toBeDefined();
+});
+
+it('should return object', () => {
+  const user = User.create();
+  expect(typeof user.getId()).toBe('object');
+});
+
+it('should return UserId', () => {
+  const user = User.create();
+  expect(user.getId()).toBeInstanceOf(UserId);
+});
+
+// ✅ GOOD: One test covers all
+it('should return UserId instance', () => {
+  const user = User.create();
+  
+  expect(user.getId()).toBeInstanceOf(UserId);
+});
+```
+
+### Don't Re-test Base Classes
+
+```typescript
+// ❌ BAD: User tests repeating Entity tests
+describe('User', () => {
+  it('should have getId', () => { /* already tested in Entity */ });
+  it('should have equals', () => { /* already tested in Entity */ });
+  it('should have isNew', () => { /* already tested in Entity */ });
+});
+
+// ✅ GOOD: Test only User-specific behavior
+describe('User', () => {
+  it('should create with UUID', () => { /* User-specific */ });
+  it('should assign properties', () => { /* User-specific */ });
+  it('should support external IDs', () => { /* User-specific */ });
+});
+```
 
 ### Mocking
 
