@@ -10,18 +10,14 @@ jobs:
   ci:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [20.x, 22.x]
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js 22.x
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 22.x
           cache: 'npm'
 
       - name: Install dependencies
@@ -43,7 +39,6 @@ jobs:
         run: npm run test:e2e
 
       - name: Upload coverage to Codecov
-        if: matrix.node-version == '22.x'
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage/lcov.info
@@ -52,6 +47,5 @@ jobs:
           fail_ci_if_error: false
 
       - name: Check coverage threshold
-        if: matrix.node-version == '22.x'
         run: |
           npm run test:cov -- --coverageThreshold='{"global":{"branches":80,"functions":80,"lines":80,"statements":80}}'

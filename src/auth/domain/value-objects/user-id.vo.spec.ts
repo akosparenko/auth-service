@@ -60,12 +60,14 @@ describe('UserId Value Object', () => {
     });
 
     it('should throw error for null', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       expect(() => UserId.create(null as any)).toThrow(
         'ID cannot be null or undefined',
       );
     });
 
     it('should throw error for non-string value', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       expect(() => UserId.create(123 as any)).toThrow(
         'UserId must be a non-empty string',
       );

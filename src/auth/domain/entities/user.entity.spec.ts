@@ -40,7 +40,7 @@ describe('User Entity', () => {
 
       expect(user.firstName).toBe('Jane');
       expect(user.lastName).toBe('Smith');
-      expect(user.email).toBe('jane@example.com');
+      expect(user.email.get()).toBe('jane@example.com');
       expect(user.passwordHash).toBe('hashed_pass');
     });
 
@@ -127,7 +127,7 @@ describe('User Entity', () => {
       expect(user.getId().value).toBe('user-123');
       expect(user.firstName).toBe('Alice');
       expect(user.lastName).toBe('Wonder');
-      expect(user.email).toBe('alice@example.com');
+      expect(user.email.get()).toBe('alice@example.com');
       expect(user.passwordHash).toBe('secure_hash');
     });
 
@@ -192,7 +192,7 @@ describe('User Entity', () => {
 
       expect(user.firstName).toBeNull();
       expect(user.lastName).toBeNull();
-      expect(user.email).toBe('minimal@example.com');
+      expect(user.email.get()).toBe('minimal@example.com');
     });
   });
 

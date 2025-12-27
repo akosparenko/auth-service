@@ -35,12 +35,14 @@ describe('EntityId (Base Value Object)', () => {
     });
 
     it('should throw error when value is null', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       expect(() => TestId.create(null as any)).toThrow(
         'ID cannot be null or undefined',
       );
     });
 
     it('should throw error when value is undefined', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       expect(() => TestId.create(undefined as any)).toThrow(
         'ID cannot be null or undefined',
       );
@@ -65,6 +67,7 @@ describe('EntityId (Base Value Object)', () => {
     it('should return false when comparing with null', () => {
       const id = TestId.create('value');
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       expect(id.equals(null as any)).toBe(false);
     });
   });

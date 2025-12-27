@@ -23,6 +23,7 @@ class TestEntity extends Entity<TestEntityId> {
 
   static createWithoutId(): TestEntity {
     const entity = new TestEntity(TestEntityId.create('temp'));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     (entity as any).id = undefined;
     return entity;
   }
@@ -63,6 +64,7 @@ describe('Entity (Base Class)', () => {
     it('should return false when comparing with null', () => {
       const entity = TestEntity.create('test-id');
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       expect(entity.equals(null as any)).toBe(false);
     });
 
@@ -87,6 +89,7 @@ describe('Entity (Base Class)', () => {
       const entity1 = TestEntity.create('same-id');
       const entity2 = AnotherTestEntity.create('same-id');
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       expect(entity1.equals(entity2 as any)).toBe(false);
     });
   });
