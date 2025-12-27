@@ -1,15 +1,15 @@
 import { User } from '@/auth/domain/entities/user.entity';
 import { PasswordHasherService } from '@/auth/domain/services/password-hasher.service';
+import { UserRepositoryInterface } from '@/auth/domain/repositories/user-repository.interface';
 import { Email } from '@/auth/domain/value-objects/email.vo';
 import RegisterUserDto from '@/auth/infrastructure/controllers/dto/user-registration.dto';
-import { UserRepository } from '@/auth/infrastructure/repositories/user.repository';
 import { ConflictException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import UserRegisterService from './user-register.service';
 
 describe('UserRegisterService', () => {
   let service: UserRegisterService;
-  let userRepository: jest.Mocked<UserRepository>;
+  let userRepository: jest.Mocked<UserRepositoryInterface>;
   let passwordHasher: jest.Mocked<PasswordHasherService>;
 
   beforeEach(async () => {
@@ -26,13 +26,13 @@ describe('UserRegisterService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserRegisterService,
-        { provide: UserRepository, useValue: mockUserRepository },
+        { provide: UserRepositoryInterface, useValue: mockUserRepository },
         { provide: PasswordHasherService, useValue: mockPasswordHasher },
       ],
     }).compile();
 
     service = module.get<UserRegisterService>(UserRegisterService);
-    userRepository = module.get(UserRepository);
+    userRepository = module.get(UserRepositoryInterface);
     passwordHasher = module.get(PasswordHasherService);
   });
 

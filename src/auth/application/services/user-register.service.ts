@@ -1,15 +1,15 @@
 import { User } from '@/auth/domain/entities/user.entity';
 import { PasswordHasherService } from '@/auth/domain/services/password-hasher.service';
 import { Email } from '@/auth/domain/value-objects/email.vo';
+import { UserRepositoryInterface } from '@/auth/domain/repositories/user-repository.interface';
 import RegisterUserDto from '@/auth/infrastructure/controllers/dto/user-registration.dto';
-import { UserRepository } from '@/auth/infrastructure/repositories/user.repository';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { UserRegisterPort } from '../ports/user-register.port';
 
 @Injectable()
 export default class UserRegisterService implements UserRegisterPort {
   public constructor(
-    private readonly repository: UserRepository,
+    private readonly repository: UserRepositoryInterface,
     private readonly passwordHasher: PasswordHasherService,
   ) {}
 
