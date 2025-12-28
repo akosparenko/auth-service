@@ -22,9 +22,7 @@
     "strictBindCallApply": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@/*": ["src/*"],
-      "@auth/*": ["src/auth/*"],
-      "@shared/*": ["src/shared/*"]
+      "@/*": ["src/*"]
     }
   }
 }

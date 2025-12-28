@@ -1,5 +1,5 @@
 import { Entity } from './entity';
-import { EntityId } from '@auth/domain/value-objects/entity-id.vo';
+import { EntityId } from '@/auth/domain/value-objects/entity-id.vo';
 
 class TestEntityId extends EntityId<string> {
   private constructor(value: string) {

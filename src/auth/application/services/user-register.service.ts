@@ -1,7 +1,7 @@
 import { User } from '@/auth/domain/entities/user.entity';
+import { UserRepositoryInterface } from '@/auth/domain/repositories/user-repository.interface';
 import { PasswordHasherService } from '@/auth/domain/services/password-hasher.service';
 import { Email } from '@/auth/domain/value-objects/email.vo';
-import { UserRepositoryInterface } from '@/auth/domain/repositories/user-repository.interface';
 import RegisterUserDto from '@/auth/infrastructure/controllers/dto/user-registration.dto';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { UserRegisterPort } from '../ports/user-register.port';

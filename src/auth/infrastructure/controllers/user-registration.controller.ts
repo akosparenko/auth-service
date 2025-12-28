@@ -1,4 +1,4 @@
-import type { UserRegisterPort } from '@/auth/application/ports/user-register.port';
+import { UserRegisterPort } from '@/auth/application/ports/user-register.port';
 import { Body, Controller, Post } from '@nestjs/common';
 import RegisterUserDto from './dto/user-registration.dto';
 

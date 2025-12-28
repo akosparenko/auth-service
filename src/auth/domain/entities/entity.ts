@@ -1,5 +1,5 @@
-import { EntityIdNotSetException } from '@auth/domain/exceptions/entity-id-not-set.exception';
-import { EntityId } from '@auth/domain/value-objects/entity-id.vo';
+import { EntityIdNotSetException } from '@/auth/domain/exceptions/entity-id-not-set.exception';
+import { EntityId } from '@/auth/domain/value-objects/entity-id.vo';
 
 /**
  * Base entity class for all domain aggregates and entities.

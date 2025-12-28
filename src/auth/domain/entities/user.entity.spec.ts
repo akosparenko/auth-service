@@ -1,4 +1,4 @@
-import { UserId } from '@auth/domain/value-objects/user-id.vo';
+import { UserId } from '@/auth/domain/value-objects/user-id.vo';
 import { Email } from '../value-objects/email.vo';
 import { User } from './user.entity';
 
