@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { PrismaService } from '../src/auth/infrastructure/persistence/prisma/prisma.service';
 
 interface ErrorResponse {
   statusCode: number;
@@ -12,6 +13,7 @@ interface ErrorResponse {
 
 describe('User Registration (e2e)', () => {
   let app: INestApplication<App>;
+  let prismaService: PrismaService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -19,10 +21,12 @@ describe('User Registration (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    prismaService = app.get<PrismaService>(PrismaService);
     await app.init();
   });
 
   afterAll(async () => {
+    await prismaService.$disconnect();
     await app.close();
   });
 

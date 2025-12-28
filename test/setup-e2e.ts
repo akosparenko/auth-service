@@ -14,22 +14,3 @@ beforeAll(async () => {
     console.error('Migration failed:', error);
   }
 }, 30000);
-
-afterAll(async () => {
-  // Clean up test database
-  try {
-    const { PrismaClient } = await import('@prisma/client');
-    const { PrismaPg } = await import('@prisma/adapter-pg');
-    const { Pool } = await import('pg');
-
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    const adapter = new PrismaPg(pool);
-    const prisma = new PrismaClient({ adapter });
-
-    await prisma.user.deleteMany();
-    await prisma.$disconnect();
-    await pool.end();
-  } catch (error) {
-    console.error('Cleanup failed:', error);
-  }
-});
