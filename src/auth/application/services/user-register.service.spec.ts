@@ -1,4 +1,5 @@
 import { User } from '@/auth/domain/entities/user.entity';
+import { UserStatus } from '@/auth/domain/entities/user-status.enum';
 import { PasswordHasherService } from '@/auth/domain/services/password-hasher.service';
 import { UserRepositoryInterface } from '@/auth/domain/repositories/user-repository.interface';
 import { Email } from '@/auth/domain/value-objects/email.vo';
@@ -66,12 +67,16 @@ describe('UserRegisterService', () => {
     });
 
     it('should throw ConflictException if user already exists', async () => {
+      const now = new Date();
       const existingUser = User.reconstitute(
         '1',
         registerDtoData.firstName,
         registerDtoData.lastName,
         new Email(registerDtoData.email),
         'hashedPassword',
+        UserStatus.ACTIVE,
+        now,
+        now,
       );
       userRepository.findByEmail.mockResolvedValue(existingUser);
 

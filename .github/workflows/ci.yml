@@ -10,6 +10,21 @@ jobs:
   ci:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: authuser
+          POSTGRES_PASSWORD: authpassword
+          POSTGRES_DB: authdb_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,6 +37,14 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Run Prisma migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://authuser:authpassword@localhost:5432/authdb_test?schema=public
 
       - name: Format check
         run: npx prettier --check "src/**/*.ts" "test/**/*.ts"
@@ -37,6 +60,8 @@ jobs:
 
       - name: Run e2e tests
         run: npm run test:e2e
+        env:
+          DATABASE_URL: postgresql://authuser:authpassword@localhost:5432/authdb_test?schema=public
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4

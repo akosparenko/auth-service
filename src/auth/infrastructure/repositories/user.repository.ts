@@ -1,14 +1,31 @@
 import { User } from '@/auth/domain/entities/user.entity';
 import { UserRepositoryInterface } from '@/auth/domain/repositories/user-repository.interface';
+import { Email } from '@/auth/domain/value-objects/email.vo';
+import { Injectable } from '@nestjs/common';
+import { PrismaUserMapper } from '../persistence/prisma/mappers/prisma-user.mapper';
+import { PrismaService } from '../persistence/prisma/prisma.service';
 
+@Injectable()
 export class UserRepository implements UserRepositoryInterface {
-  getNextId(): Promise<number> {
-    throw new Error('Method not implemented.');
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findByEmail(email: Email): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { email: email.get() },
+    });
+
+    return user ? PrismaUserMapper.toDomain(user) : null;
   }
-  findByEmail(): Promise<User | null> {
-    throw new Error('Method not implemented.');
-  }
-  save(): Promise<User> {
-    throw new Error('Method not implemented.');
+
+  async save(user: User): Promise<User> {
+    const data = PrismaUserMapper.toPersistence(user);
+
+    const savedUser = await this.prisma.user.upsert({
+      where: { id: data.id },
+      update: data,
+      create: data,
+    });
+
+    return PrismaUserMapper.toDomain(savedUser);
   }
 }
