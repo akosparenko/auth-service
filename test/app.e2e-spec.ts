@@ -4,6 +4,12 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 
+interface ErrorResponse {
+  statusCode: number;
+  message: string;
+  timestamp: string;
+}
+
 describe('User Registration (e2e)', () => {
   let app: INestApplication<App>;
 
@@ -35,9 +41,9 @@ describe('User Registration (e2e)', () => {
         .expect(201);
 
       expect(response.body).toHaveProperty('id');
-      expect(response.body.email).toBe(userDto.email);
-      expect(response.body.firstName).toBe(userDto.firstName);
-      expect(response.body.lastName).toBe(userDto.lastName);
+      expect(response.body).toHaveProperty('email', userDto.email);
+      expect(response.body).toHaveProperty('firstName', userDto.firstName);
+      expect(response.body).toHaveProperty('lastName', userDto.lastName);
       expect(response.body).not.toHaveProperty('password');
       expect(response.body).not.toHaveProperty('passwordHash');
     });
@@ -62,7 +68,8 @@ describe('User Registration (e2e)', () => {
         .send(userDto)
         .expect(409);
 
-      expect(response.body.message).toContain('User already exists');
+      const errorResponse = response.body as ErrorResponse;
+      expect(errorResponse.message).toContain('User already exists');
     });
 
     it('should return 400 for invalid email format', async () => {
@@ -92,7 +99,7 @@ describe('User Registration (e2e)', () => {
         .send(userDto)
         .expect(201);
 
-      expect(response.body.status).toBe('ACTIVE');
+      expect(response.body).toHaveProperty('status', 'ACTIVE');
     });
 
     it('should hash the password before storing', async () => {
@@ -109,8 +116,8 @@ describe('User Registration (e2e)', () => {
         .expect(201);
 
       // Password should not be in response
-      expect(response.body.password).toBeUndefined();
-      expect(response.body.passwordHash).toBeUndefined();
+      expect(response.body).not.toHaveProperty('password');
+      expect(response.body).not.toHaveProperty('passwordHash');
     });
   });
 });

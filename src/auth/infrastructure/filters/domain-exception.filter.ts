@@ -29,10 +29,15 @@ export class DomainExceptionFilter implements ExceptionFilter {
     if (exception instanceof BadRequestException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      message =
-        typeof exceptionResponse === 'string'
-          ? exceptionResponse
-          : (exceptionResponse as any).message;
+      if (typeof exceptionResponse === 'string') {
+        message = exceptionResponse;
+      } else if (
+        exceptionResponse &&
+        typeof exceptionResponse === 'object' &&
+        'message' in exceptionResponse
+      ) {
+        message = String(exceptionResponse.message);
+      }
     }
 
     response.status(status).json({
