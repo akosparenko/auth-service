@@ -4,7 +4,6 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 import { PrismaService } from '../src/auth/infrastructure/persistence/prisma/prisma.service';
-import { PrismaClient } from '@prisma/client';
 
 interface ErrorResponse {
   statusCode: number;
