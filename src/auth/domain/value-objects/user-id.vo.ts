@@ -1,10 +1,10 @@
 import { randomUUID } from 'crypto';
-import { EntityId } from './entity-id.vo.js';
+import { EntityId } from './entity-id.vo';
 
 /**
  * User identifier value object.
  * Uses UUID v4 by default but can accept any string format.
- * 
+ *
  * This provides flexibility:
  * - Consumers can use UUIDs (default)
  * - Or sequential IDs from database
