@@ -7,7 +7,7 @@ import { AppModule } from './../src/app.module';
 describe('User Registration (e2e)', () => {
   let app: INestApplication<App>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -16,39 +16,101 @@ describe('User Registration (e2e)', () => {
     await app.init();
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await app.close();
   });
 
-  it('/users (POST) - should register a new user', () => {
-    const userDto = {
-      firstName: 'John',
-      lastName: 'Doe',
-      email: `test${Date.now()}@example.com`,
-      password: 'SecurePassword123!',
-    };
+  describe('/users (POST)', () => {
+    it('should register a new user successfully', async () => {
+      const userDto = {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: `test-${Date.now()}@example.com`,
+        password: 'SecurePassword123!',
+      };
 
-    return request(app.getHttpServer())
-      .post('/users')
-      .send(userDto)
-      .expect(500);
-  });
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send(userDto)
+        .expect(201);
 
-  it('/users (POST) - should return 409 for duplicate email', async () => {
-    const userDto = {
-      firstName: 'Jane',
-      lastName: 'Smith',
-      email: `duplicate${Date.now()}@example.com`,
-      password: 'SecurePassword123!',
-    };
+      expect(response.body).toHaveProperty('id');
+      expect(response.body.email).toBe(userDto.email);
+      expect(response.body.firstName).toBe(userDto.firstName);
+      expect(response.body.lastName).toBe(userDto.lastName);
+      expect(response.body).not.toHaveProperty('password');
+      expect(response.body).not.toHaveProperty('passwordHash');
+    });
 
-    // First registration should succeed
-    await request(app.getHttpServer()).post('/users').send(userDto).expect(500);
+    it('should return 409 for duplicate email', async () => {
+      const userDto = {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        email: `duplicate-${Date.now()}@example.com`,
+        password: 'SecurePassword123!',
+      };
 
-    // Second registration with same email should fail
-    return request(app.getHttpServer())
-      .post('/users')
-      .send(userDto)
-      .expect(500);
+      // First registration should succeed
+      await request(app.getHttpServer())
+        .post('/users')
+        .send(userDto)
+        .expect(201);
+
+      // Second registration with same email should fail
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send(userDto)
+        .expect(409);
+
+      expect(response.body.message).toContain('User already exists');
+    });
+
+    it('should return 400 for invalid email format', async () => {
+      const userDto = {
+        firstName: 'Invalid',
+        lastName: 'Email',
+        email: 'not-an-email',
+        password: 'SecurePassword123!',
+      };
+
+      await request(app.getHttpServer())
+        .post('/users')
+        .send(userDto)
+        .expect(400);
+    });
+
+    it('should create user with ACTIVE status by default', async () => {
+      const userDto = {
+        firstName: 'Status',
+        lastName: 'Test',
+        email: `status-${Date.now()}@example.com`,
+        password: 'SecurePassword123!',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send(userDto)
+        .expect(201);
+
+      expect(response.body.status).toBe('ACTIVE');
+    });
+
+    it('should hash the password before storing', async () => {
+      const userDto = {
+        firstName: 'Password',
+        lastName: 'Hash',
+        email: `hash-${Date.now()}@example.com`,
+        password: 'SecurePassword123!',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send(userDto)
+        .expect(201);
+
+      // Password should not be in response
+      expect(response.body.password).toBeUndefined();
+      expect(response.body.passwordHash).toBeUndefined();
+    });
   });
 });
