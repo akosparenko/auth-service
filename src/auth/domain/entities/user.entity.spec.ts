@@ -1,6 +1,7 @@
 import { UserId } from '@/auth/domain/value-objects/user-id.vo';
 import { Email } from '../value-objects/email.vo';
 import { User } from './user.entity';
+import { UserStatus } from './user-status.enum';
 
 describe('User Entity', () => {
   const validUserData = {
@@ -116,12 +117,16 @@ describe('User Entity', () => {
 
   describe('reconstitute (factory method)', () => {
     it('should reconstitute user with provided ID and properties', () => {
+      const now = new Date();
       const user = User.reconstitute(
         'user-123',
         'Alice',
         'Wonder',
         new Email('alice@example.com'),
         'secure_hash',
+        UserStatus.ACTIVE,
+        now,
+        now,
       );
 
       expect(user.getId().value).toBe('user-123');
@@ -132,18 +137,23 @@ describe('User Entity', () => {
     });
 
     it('should accept numeric string ID (from database)', () => {
+      const now = new Date();
       const user = User.reconstitute(
         '12345',
         validUserData.firstName,
         validUserData.lastName,
         validUserData.email,
         validUserData.passwordHash,
+        UserStatus.ACTIVE,
+        now,
+        now,
       );
 
       expect(user.getId().value).toBe('12345');
     });
 
     it('should throw error when reconstituting with empty string ID', () => {
+      const now = new Date();
       expect(() =>
         User.reconstitute(
           '',
@@ -151,17 +161,24 @@ describe('User Entity', () => {
           'Last',
           new Email('email@test.com'),
           'hash',
+          UserStatus.ACTIVE,
+          now,
+          now,
         ),
       ).toThrow('UserId must be a non-empty string');
     });
 
     it('should reconstitute user with null firstName', () => {
+      const now = new Date();
       const user = User.reconstitute(
         'user-id',
         null,
         'Smith',
         new Email('test@example.com'),
         'hash',
+        UserStatus.ACTIVE,
+        now,
+        now,
       );
 
       expect(user.firstName).toBeNull();
@@ -169,12 +186,16 @@ describe('User Entity', () => {
     });
 
     it('should reconstitute user with null lastName', () => {
+      const now = new Date();
       const user = User.reconstitute(
         'user-id',
         'Alice',
         null,
         new Email('test@example.com'),
         'hash',
+        UserStatus.ACTIVE,
+        now,
+        now,
       );
 
       expect(user.firstName).toBe('Alice');
@@ -182,12 +203,16 @@ describe('User Entity', () => {
     });
 
     it('should reconstitute user with both names null', () => {
+      const now = new Date();
       const user = User.reconstitute(
         'user-id',
         null,
         null,
         new Email('minimal@example.com'),
         'hash',
+        UserStatus.ACTIVE,
+        now,
+        now,
       );
 
       expect(user.firstName).toBeNull();
@@ -199,12 +224,16 @@ describe('User Entity', () => {
   describe('equals', () => {
     it('should return true when users have same ID', () => {
       const userId = 'same-user-id';
+      const now = new Date();
       const user1 = User.reconstitute(
         userId,
         'John',
         'Doe',
         new Email('john@example.com'),
         'hash1',
+        UserStatus.ACTIVE,
+        now,
+        now,
       );
       const user2 = User.reconstitute(
         userId,
@@ -212,18 +241,25 @@ describe('User Entity', () => {
         'Smith',
         new Email('jane@example.com'),
         'hash2',
+        UserStatus.ACTIVE,
+        now,
+        now,
       );
 
       expect(user1.equals(user2)).toBe(true);
     });
 
     it('should return false when users have different IDs', () => {
+      const now = new Date();
       const user1 = User.reconstitute(
         'user-1',
         'John',
         'Doe',
         new Email('john@test.com'),
         'hash',
+        UserStatus.ACTIVE,
+        now,
+        now,
       );
       const user2 = User.reconstitute(
         'user-2',
@@ -231,6 +267,9 @@ describe('User Entity', () => {
         'Doe',
         new Email('jane@test.com'),
         'hash',
+        UserStatus.ACTIVE,
+        now,
+        now,
       );
 
       expect(user1.equals(user2)).toBe(false);
@@ -253,6 +292,9 @@ describe('User Entity', () => {
         newUser.lastName,
         newUser.email,
         newUser.passwordHash,
+        newUser.status,
+        newUser.createdAt,
+        newUser.updatedAt,
       );
 
       expect(loadedUser.getId().value).toBe(savedId);
@@ -260,12 +302,16 @@ describe('User Entity', () => {
     });
 
     it('should support external system numeric ID format', () => {
+      const now = new Date();
       const user = User.reconstitute(
         '999999',
         validUserData.firstName,
         validUserData.lastName,
         validUserData.email,
         validUserData.passwordHash,
+        UserStatus.ACTIVE,
+        now,
+        now,
       );
 
       expect(user.getId().value).toBe('999999');
