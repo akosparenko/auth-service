@@ -4,6 +4,7 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 import { PrismaService } from '../src/auth/infrastructure/persistence/prisma/prisma.service';
+import { PrismaClient } from '@prisma/client';
 
 interface ErrorResponse {
   statusCode: number;
@@ -23,6 +24,18 @@ describe('User Registration (e2e)', () => {
     app = moduleFixture.createNestApplication();
     prismaService = app.get<PrismaService>(PrismaService);
     await app.init();
+  });
+
+  beforeEach(async () => {
+    // Start a transaction before each test (similar to Laravel's RefreshDatabase)
+    // This ensures all database changes are rolled back after each test
+    await prismaService.$executeRaw`BEGIN`;
+  });
+
+  afterEach(async () => {
+    // Rollback the transaction after each test
+    // This automatically cleans up all data created during the test
+    await prismaService.$executeRaw`ROLLBACK`;
   });
 
   afterAll(async () => {
